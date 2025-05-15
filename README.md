@@ -1,212 +1,283 @@
-# react-native-super-responsive
+# React Native Responsive Kit 📱 📊
 
-A lightweight, easy-to-use package for responsive design in React Native. This package helps you dynamically handle layouts, font scaling, screen dimensions, and orientation changes across all devices like phones, tablets, and iPads.
+<div align="center">
+  <img src="https://img.shields.io/npm/v/react-native-responsive-kit" alt="npm version" />
+  <img src="https://img.shields.io/npm/dt/react-native-responsive-kit" alt="downloads" />
+  <img src="https://img.shields.io/github/license/SaeculumSolutions/react-native-responsive-kit" alt="license" />
+</div>
 
-## Features
+A lightweight, powerful toolkit for creating truly responsive React Native applications that adapt beautifully to any device size or orientation.
 
-- 📱 **Responsive Dimensions**: Scale components dynamically using percentages of screen width or height.
-- 🔤 **Font Scaling**: Ensure text sizes are readable across all devices with varying screen densities.
-- 🌐 **Orientation Handling**: Adjust layouts dynamically based on portrait or landscape orientation.
-- 💻 **Device Awareness**: Detect if the device is a tablet and apply custom layouts.
-- 📏 **Custom Breakpoints**: Use predefined or custom breakpoints to handle layouts for different screen sizes.
+## ✨ Features
 
-## Installation
+- 📐 **Responsive Dimensions** - Scale components dynamically based on screen size
+- 🔤 **Font Scaling** - Maintain readable text across all devices
+- 🔄 **Orientation Handling** - Adapt layouts dynamically when devices rotate
+- 📱 **Device Detection** - Optimize UIs for phones and tablets
+- 📏 **Flexible Breakpoints** - Create adaptive designs with customizable breakpoints
 
-Install the package via npm:
+## 📦 Installation
 
-**npm install react-native-super-responsive**
+```bash
+npm install react-native-responsive-kit
+# or
+yarn add react-native-responsive-kit
+```
 
-## Getting Started
+## 🚀 Quick Start Guide
 
-    import {
-    wp,
-    hp,
-    scaleFont,
-    scaleWidth,
-    scaleHeight,
-    useOrientation,
-    isTablet,
-    BREAKPOINTS,
-    getBreakpoint,
-    }
+Import the utilities you need:
 
-## **Utilities**
+```javascript
+import {
+  wp,
+  hp,
+  pxToDpWidth,
+  pxToDpHeight,
+  responsiveWidth,
+  responsiveHeight,
+  scaleFont,
+  useOrientation,
+  isTablet,
+  BREAKPOINTS,
+  getBreakpoint,
+} from "react-native-responsive-kit";
+```
 
-Here’s a breakdown of each utility provided by the package:
+## 📚 Documentation
 
-### **1. Responsive Dimensions**
+### Responsive Dimensions
 
-Dynamically scale components based on screen width or height.
+#### Percentage-based scaling:
 
-| Function           | Description                                    | Example                           |
-| ------------------ | ---------------------------------------------- | --------------------------------- |
-| `wp`               | Percentage of screen width                     | `wp(50)` → 50% of screen width    |
-| `hp`               | Percentage of screen height                    | `hp(30)` → 30% of screen height   |
-| `pxToDpWidth`      | Converts pixels to device width                | `pxToDpWidth(120)`                |
-| `pxToDpHeight`     | Converts pixels to device height               | `pxToDpHeight(50)`                |
-| `responsiveWidth`  | Flexible: Percent or pixel-based screen width  | `responsiveWidth(120, 'pixel')`   |
-| `responsiveHeight` | Flexible: Percent or pixel-based screen height | `responsiveHeight(50, 'percent')` |
+```javascript
+// Width: 80% of screen width
+// Height: 50% of screen height
+<View style={{
+  width: wp(80),
+  height: hp(50),
+  padding: wp(5)
+}}>
+```
 
-**Example:**
+#### Pixel-to-device conversion (from design files):
 
-#### **1.1 Percentage-Based Dimensions:**
+Easily convert your Figma/Sketch designs (in pixels) to responsive units:
 
-        const styles = StyleSheet.create({
-        container: {
-        width: wp(80), // 80% of the screen width
-        height: hp(50), // 50% of the screen height
-        }});
+```javascript
+// Convert 120px width and 50px height from Figma to device-specific dimensions
+<Button style={{
+  width: pxToDpWidth(120),
+  height: pxToDpHeight(50),
+  borderRadius: pxToDpWidth(8)
+}}>
+```
 
-#### **1.2 Pixel-Based Dimensions:**
+#### Flexible dimensions API:
 
-        const styles = StyleSheet.create({
-        button: {
-        width: pxToDpWidth(120), // Convert 120px from Figma
-        height: pxToDpHeight(50), // Convert 50px from Figma
-        }});
+```javascript
+// Choose between percentage or pixel-based units
+<Header style={{
+  width: responsiveWidth(100, 'percent'),  // Full width
+  height: responsiveHeight(60, 'pixel')    // 60px converted to responsive units
+}}>
+```
 
-#### **1.3 Flexible Dimensions (Dynamic Selection):**
+### Font Scaling
 
-        const styles = StyleSheet.create({
-        header: {
-        width: responsiveWidth(120, 'pixel'), // Pixel-based width
-        height: responsiveHeight(50, 'percent'), // Percentage-based height
-        }});
+Keep text readable on all screen sizes:
 
-### **2. Font Scaling**
+```javascript
+<Text
+  style={{
+    fontSize: scaleFont(16),
+    lineHeight: scaleFont(24),
+  }}
+>
+  This text scales proportionally on all devices
+</Text>
+```
 
-Scale fonts dynamically based on the device’s pixel density.
+### Orientation Handling
 
-| Function    | Description                              | Example         |
-| ----------- | ---------------------------------------- | --------------- |
-| `scaleFont` | Adjust font size based on screen density | `scaleFont(16)` |
+Adapt layouts when device orientation changes:
 
-**Example:**
+```javascript
+function ResponsiveLayout() {
+  const orientation = useOrientation(); // 'portrait' or 'landscape'
 
-    const styles = StyleSheet.create({
-    text: {
-    fontSize: scaleFont(16), // Scales font size dynamically
-    },
-    });
+  return (
+    <View
+      style={{
+        flexDirection: orientation === "landscape" ? "row" : "column",
+      }}
+    >
+      <Sidebar />
+      <Content />
+    </View>
+  );
+}
+```
 
-### **3. Orientation Handling**
+### Device Detection
 
-Detect the device's orientation (portrait or landscape) and adjust styles or layouts dynamically.
+Create device-specific layouts:
 
-| Hook             | Description                           | Example                                 |
-| ---------------- | ------------------------------------- | --------------------------------------- |
-| `useOrientation` | Returns `'portrait'` or `'landscape'` | `const orientation = useOrientation();` |
+```javascript
+<View style={{
+  padding: isTablet() ? wp(8) : wp(4),
+  // Apply different styling for tablets
+}}>
+```
 
-**Example:**
+### Breakpoint System
 
-    const orientation = useOrientation();
-    const isLandscape = orientation === 'landscape';
-    const styles = StyleSheet.create({
-    container: {
-    flexDirection: isLandscape ? 'row' : 'column', // Adjust layout dynamically
-    }});
+Define layouts based on screen size categories:
 
-### **4. Device Awareness**
+```javascript
+function AdaptiveComponent() {
+  const screenWidth = Dimensions.get("window").width;
+  const breakpoint = getBreakpoint(screenWidth);
 
-Detect if the device is a tablet or apply custom breakpoints for screen sizes.
+  return (
+    <View>
+      {breakpoint === "small" && <MobileLayout />}
+      {breakpoint === "medium" && <TabletLayout />}
+      {breakpoint === "large" && <DesktopLayout />}
+    </View>
+  );
+}
+```
 
-| Function        | Description                                             | Example                      |
-| --------------- | ------------------------------------------------------- | ---------------------------- |
-| `isTablet`      | Returns `true` if the device is a tablet                | `const tablet = isTablet();` |
-| `getBreakpoint` | Returns the current screen size category based on width | `getBreakpoint(width)`       |
+## 🌟 Complete Example
 
-**Example:**
+```javascript
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  wp,
+  hp,
+  pxToDpWidth,
+  pxToDpHeight,
+  scaleFont,
+  useOrientation,
+  isTablet,
+} from "react-native-responsive-kit";
 
-    const styles = StyleSheet.create({
-    container: {
-    backgroundColor: isTablet() ? 'green' : 'blue', // Apply tablet-specific styles
-    }});
+const ResponsiveCard = () => {
+  const orientation = useOrientation();
+  const tablet = isTablet();
 
-### **5. Custom Breakpoints**
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Welcome to Your App</Text>
 
-Define layouts for specific screen sizes using predefined or custom breakpoints.
+      <View
+        style={[
+          styles.card,
+          // Adapt card layout based on orientation and device type
+          orientation === "landscape" && styles.cardLandscape,
+          tablet && styles.cardTablet,
+        ]}
+      >
+        <Text style={styles.cardText}>
+          This card adapts to your device's size and orientation
+        </Text>
 
-| Constant      | Description         | Values                     |
-| ------------- | ------------------- | -------------------------- |
-| `BREAKPOINTS` | Default breakpoints | `small`, `medium`, `large` |
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Get Started</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
 
-**Example:**
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: wp(5),
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  title: {
+    fontSize: scaleFont(24),
+    fontWeight: "bold",
+    marginBottom: hp(2),
+    textAlign: "center",
+  },
+  card: {
+    width: wp(90),
+    padding: pxToDpWidth(16),
+    borderRadius: pxToDpWidth(8),
+    backgroundColor: "#f0f0f0",
+    alignItems: "center",
+  },
+  cardLandscape: {
+    width: wp(60),
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  cardTablet: {
+    maxWidth: 500, // Cap max width on tablets
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    elevation: 3,
+  },
+  cardText: {
+    fontSize: scaleFont(16),
+    textAlign: "center",
+    marginBottom: hp(2),
+  },
+  button: {
+    backgroundColor: "#007AFF",
+    paddingVertical: pxToDpHeight(12),
+    paddingHorizontal: pxToDpWidth(24),
+    borderRadius: pxToDpWidth(8),
+  },
+  buttonText: {
+    color: "white",
+    fontSize: scaleFont(16),
+    fontWeight: "600",
+  },
+});
 
-    const currentBreakpoint = getBreakpoint(Dimensions.get('window').width);
-    if (currentBreakpoint === 'small') {
-    console.log('Small screen detected!');
-    }
+export default ResponsiveCard;
+```
 
-### **Example Usage**
+## 💪 Why Use React Native Responsive Kit?
 
-Here’s a complete example demonstrating the package:
+- **Design Fidelity**: Precisely translate designs into responsive interfaces
+- **Developer Productivity**: Focus on features rather than screen adaptation logic
+- **Future-Proof**: Handles new device sizes automatically
+- **Lightweight**: Minimal impact on bundle size and performance
+- **Type Safety**: Full TypeScript support
 
-    import React from 'react';
-    import { View, Text, StyleSheet } from 'react-native';
-    import {
-    responsiveWidth,
-    responsiveHeight,
-    scaleFont,
-    pxToDpWidth,
-    pxToDpHeight,
-    } from 'react-native-super-responsive';
+### ⚡ Performance Optimized
 
-    const App: React.FC = () => {
-    return (
-        <View style={styles.container}>
-        <Text style={styles.title}>Responsive Design</Text>
-        <Text style={styles.subtitle}>This button is styled with pixels and percentages!</Text>
-        <View style={styles.button}>
-            <Text style={styles.buttonText}>Click Me</Text>
-        </View>
-        </View>
-    );
-    };
+React Native Responsive Kit is carefully optimized to have minimal impact on your app's performance:
 
-    const styles = StyleSheet.create({
-    container: {
-        width: responsiveWidth(90, 'percent'), // 90% of the screen width
-        height: responsiveHeight(50, 'percent'), // 50% of the screen height
-        padding: pxToDpWidth(16), // Padding converted from Figma (16px)
-        backgroundColor: 'lightblue',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: scaleFont(20), // Font scaled proportionally
-        color: 'black',
-        marginBottom: pxToDpHeight(10), // 10px converted from Figma
-    },
-    subtitle: {
-        fontSize: scaleFont(16), // Scaled font
-        color: 'darkgray',
-        textAlign: 'center',
-    },
-    button: {
-        width: pxToDpWidth(120), // 120px width from Figma
-        height: pxToDpHeight(50), // 50px height from Figma
-        backgroundColor: 'blue',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: pxToDpWidth(8), // Rounded corners converted from Figma (8px)
-    },
-    buttonText: {
-        fontSize: scaleFont(16), // Scaled font size for button text
-        color: 'white',
-    },
-    });
+- No external dependencies
+- Efficient calculations
+- Minimal re-renders
+- Small bundle size
 
-export default App;
+## 🛠️ Contributing
 
-### **Advantages**
+We welcome contributions! Please feel free to submit a Pull Request.
 
-1.  📐 **Scalable**: Handles layouts for all device sizes and orientations.
-2.  ⚡ **Lightweight**: Minimal overhead with no external dependencies.
-3.  🛠️ **Customizable**: Fully adaptable for different screen breakpoints and designs.
-4.  🎨 **Readable Fonts**: Ensures consistent font scaling across devices.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### **Contributing**
+## 📄 License
 
-We welcome contributions to enhance the features of this package. Please submit a pull request or create an issue to get started.
+This project is licensed under the ISC License - see the LICENSE file for details.
 
-Since one file can be synced with multiple locations, you can list and manage synchronized locations by clicking **File synchronization** in the **Synchronize** sub-menu. This allows you to list and remove synchronized locations that are linked to your file.
+---
+
+<div align="center">
+  <sub>Built with ❤️ by <a href="https://github.com/SaeculumSolutions">Saeculum Solutions</a></sub>
+</div>
